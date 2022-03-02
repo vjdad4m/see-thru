@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import multiprocessing
 
 import cv2
@@ -14,6 +15,7 @@ class ProcessPose(multiprocessing.Process):
 
     def run(self):
         import mediapipe as mp
+
         cap = cv2.VideoCapture(0)
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, Config.FRAME_WIDTH)
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, Config.FRAME_HEIGHT)
@@ -73,8 +75,7 @@ class ProcessPose(multiprocessing.Process):
             if t2 - measure_previous > Config.LOGGING_RATE:
                 measure_previous = t2
                 print(f'[Process Pose] fps: {fps(t1, t2)}')
-
-            
+  
         cv2.destroyAllWindows()
 
 
@@ -130,12 +131,16 @@ class ProcessRadar(multiprocessing.Process):
 
         cv2.destroyAllWindows()
 
+
+
 def main():
-    print('Starting Pose Process')
     p_pose = ProcessPose(0)
-    print('Starting Radar Process')
     p_radar = ProcessRadar(1)
+
+    print('Starting Pose Process')
     p_pose.start()
+
+    print('Starting Radar Process')
     p_radar.start()
 
 if __name__ == '__main__':
