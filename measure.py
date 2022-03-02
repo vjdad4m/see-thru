@@ -27,6 +27,7 @@ class ProcessPose(multiprocessing.Process):
             t1 = time.time()
 
             ret, frame = cap.read()
+            t_taken = time.time()
 
             img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
 
@@ -41,7 +42,7 @@ class ProcessPose(multiprocessing.Process):
                         landmarks.append([0, 0])
 
                 landmarks = np.array(landmarks, np.float32)
-                np.save(f'./out/pose/{time.time()}.npy', landmarks)
+                np.save(f'./out/pose/{t_taken}.npy', landmarks)
 
                 if Config.DRAW_POSE:
                     pose_img = frame.copy()
@@ -50,17 +51,16 @@ class ProcessPose(multiprocessing.Process):
                         pose_img,
                         res.pose_landmarks,
                         mp.solutions.pose.POSE_CONNECTIONS,
-                        landmark_drawing_spec=mp.solutions.drawing_styles.get_default_pose_landmarks_style())
+                        landmark_drawing_spec = mp.solutions.drawing_styles.get_default_pose_landmarks_style()
+                    )
 
-                    self.d.set(1, pose_img)
-                    
                     cv2.imshow('pose', pose_img)
 
             if Config.SAVE_RAW_IMG:
                 img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-                # np.save(f'./out/img/{time.time()}.npy', img)
+                # np.save(f'./out/img/{t_taken}.npy', img)
                 img = Image.fromarray(img)
-                img.save(f'./out/img/{time.time()}.png')
+                img.save(f'./out/img/{t_taken}.png')
 
             if Config.DRAW_CAM:
                 cv2.imshow('frame', frame)
@@ -109,12 +109,12 @@ class ProcessRadar(multiprocessing.Process):
             
             wlbt.Trigger()
             img = wlbt.GetRawImageSlice()
+            t_taken = time.time()
+
             img = np.array(img[0], np.uint8)
 
-            self.d.set(2, img)
-
             image = Image.fromarray(img)
-            image.save(f'./out/radar/{time.time()}.png')
+            image.save(f'./out/radar/{t_taken}.png')
             
             if Config.DRAW_RADAR:
                 cv2.imshow('radar', img)
@@ -137,9 +137,6 @@ def main():
     p_radar = ProcessRadar(1)
     p_pose.start()
     p_radar.start()
-
-    while True:
-        print(d.data)
 
 if __name__ == '__main__':
     main()
