@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import os
 
 # f_img = os.listdir('./out/img') # same as f_pose
@@ -21,9 +22,10 @@ while i_pose < len(f_pose) - 1 and i_radar < len(f_radar) - 1:
     
     distance = c_pose - c_radar
 
-    # TODO: Interpolate the pose data to match the radar data. (next pose time - current pose time etc.)
+    # valid timestamp if distance < 0.067 (~15 fps)
 
-    print(f'Pose Timestamp: {c_pose}  Radar Timestamp: {c_radar}  Distance: {distance}')
+    if abs(distance) < 0.067:
+        print(f'Pose Timestamp: {c_pose}  Radar Timestamp: {c_radar}  Distance: {distance}')
 
     if distance > 0:
         i_radar += 1

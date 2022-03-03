@@ -6,4 +6,6 @@ Current pose detection methods use a camera, which is not privacy-friendly. Othe
 
 ## Notes
 
-Pose detection method: MediaPipe Pose
+Pose detection method: MediaPipe Poses
+
+Match Tp(pose) with Tr(radar) if dt < 0.067
