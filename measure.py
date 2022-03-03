@@ -58,11 +58,11 @@ class ProcessPose(multiprocessing.Process):
 
                     cv2.imshow('pose', pose_img)
 
-            if Config.SAVE_RAW_IMG:
-                img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-                # np.save(f'./out/img/{t_taken}.npy', img)
-                img = Image.fromarray(img)
-                img.save(f'./out/img/{t_taken}.png')
+                if Config.SAVE_RAW_IMG:
+                    img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
+                    # np.save(f'./out/img/{t_taken}.npy', img)
+                    img = Image.fromarray(img)
+                    img.save(f'./out/img/{t_taken}.png')
 
             if Config.DRAW_CAM:
                 cv2.imshow('frame', frame)
