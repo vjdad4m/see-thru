@@ -52,13 +52,13 @@ while True:
     event, values = window.read()
     shouldUpdate = False
 
-    if event == sg.WIN_CLOSED or event in ('X', 'Escape:9'):
+    if event == sg.WIN_CLOSED or event in ('X', 'Escape:9', 'Escape:27', 'q'):
         break
 
-    if event in ('>', 'Right:114'):
+    if event in ('>', 'Right:114', 'Right:39'):
         data_index = min(data_index + 1, l_data - 1)
         shouldUpdate = True
-    elif event in ('<', 'Left:113'):
+    elif event in ('<', 'Left:113', 'Left:38'):
         data_index = max(1, data_index - 1)
         shouldUpdate = True
     elif event == '>>':

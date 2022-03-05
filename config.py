@@ -14,8 +14,8 @@ class Config(object):
     POSE_CONFIDENCE = 0.6       # %
 
     # RADAR SETTINGS
-    MIN_R = 1                   # cm
-    MAX_R = 240                 # cm
+    MIN_R = 100                 # cm
+    MAX_R = 350                 # cm
     RES_R = 4                   # cm
     MIN_T = -45                 # deg
     MAX_T = 45                  # deg
