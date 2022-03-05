@@ -44,21 +44,21 @@ layout= [   [sg.Stretch(), sg.Button('X')],
             [sg.Button('<<'), sg.Button('<'), sg.Button('>'), sg.Button('>>')]
         ]
 
-window = sg.Window('See-Thru', layout, element_justification='c')
+window = sg.Window('See-Thru', layout, element_justification = 'c', return_keyboard_events = True)
 
 data_index = 0
 
 while True:
     event, values = window.read()
     shouldUpdate = False
-    
-    if event == sg.WIN_CLOSED or event == 'X':
+
+    if event == sg.WIN_CLOSED or event in ('X', 'Escape:9'):
         break
-    
-    if event == '>':
+
+    if event in ('>', 'Right:114'):
         data_index = min(data_index + 1, l_data - 1)
         shouldUpdate = True
-    elif event == '<':
+    elif event in ('<', 'Left:113'):
         data_index = max(1, data_index - 1)
         shouldUpdate = True
     elif event == '>>':
