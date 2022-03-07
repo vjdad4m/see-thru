@@ -1,7 +1,7 @@
 class Config(object):
     # GENERAL SETTINGS
-    LOGGING_RATE    = 4         # seconds
-    DRAW_CAM        = True      # yes/no
+    LOGGING_RATE    = 1         # seconds
+    DRAW_CAM        = False     # yes/no
     DRAW_POSE       = True      # yes/no
     DRAW_RADAR      = True      # yes/no
 
@@ -15,11 +15,11 @@ class Config(object):
 
     # RADAR SETTINGS
     MIN_R = 100                 # cm
-    MAX_R = 350                 # cm
-    RES_R = 4                   # cm
-    MIN_T = -45                 # deg
-    MAX_T = 45                  # deg
-    RES_T = 5                   # deg
-    MIN_P = -45                 # deg
-    MAX_P = 45                  # deg
-    RES_P = 5                   # deg
+    MAX_R = 349                 # cm
+    RES_R = 5                   # cm
+    MIN_T = -44                 # deg
+    MAX_T = 44                  # deg
+    RES_T = 2.8                 # deg
+    MIN_P = -44                 # deg
+    MAX_P = 44                  # deg
+    RES_P = 2.8                 # deg
