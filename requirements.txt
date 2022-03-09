@@ -1,0 +1,9 @@
+numpy
+Pillow
+opencv-python
+PySimpleGUI
+tk
+mediapipe
+torch
+pandas
+tqdm
