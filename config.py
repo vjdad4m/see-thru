@@ -4,6 +4,7 @@ class Config(object):
     DRAW_CAM        = False     # yes/no
     DRAW_POSE       = True      # yes/no
     DRAW_RADAR      = True      # yes/no
+    MATCH_DISTANCE  = 0.067     # seconds
 
     # CAMERA SETTINGS
     FRAME_WIDTH     = 640       # pixels
