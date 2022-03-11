@@ -1,11 +1,20 @@
 # See-Thru
 
-## Introduction
+This repo contains applications used by our project, which aims to create multiple machine learning applications based on radar sensor data. Specifically, it uses the [walabot](https://walabot.com/makers) radar.
 
-Current pose detection methods use a camera, which is not privacy-friendly. Other methods require a sensor to be strapped onto the user, which are uncomfortable and limit the users movement. We want to develop a method that can aquire accurate pose-data with radar data, which is privacy friendly and does not have to have contact with the user.
+* Data collection works on Windows.
+* Data processing applications work on Windows, Linux and MacOS.
 
-## Notes
+GUI framework used: [PySimpleGUI](https://github.com/PySimpleGUI/PySimpleGUI)
 
-Pose detection method: MediaPipe Poses
+## Setup
 
-Match Tp(pose) with Tr(radar) if dt < 0.067
+1. Install the [WalabotSDK](https://walabot.com/getting-started) (has problems running on Linux, so using the Windows version is recommended).
+
+2. Install dependencies using pip (`requirements.txt`)
+
+3. For data collection run `measure.py`
+
+4. For data exploration run `app.py`  
+
+<img src="./res/app.png">
