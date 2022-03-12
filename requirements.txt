@@ -1,9 +1,9 @@
-numpy
-Pillow
-opencv-python
-PySimpleGUI
-tk
-mediapipe
+numpy==1.22.2
+Pillow==8.4.0
+opencv-python==4.5.5.62
+PySimpleGUI==4.57.0
+mediapipe==0.8.9.1
+pandas==1.3.5
+tqdm==4.62.3
 torch
-pandas
-tqdm
+torchvision
