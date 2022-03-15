@@ -1,5 +1,5 @@
 numpy==1.22.2
-Pillow==8.4.0
+Pillow==9.0.1
 opencv-python==4.5.5.62
 PySimpleGUI==4.57.0
 mediapipe==0.8.9.1
