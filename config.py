@@ -5,6 +5,7 @@ class Config(object):
     DRAW_POSE       = True      # yes/no
     DRAW_RADAR      = True      # yes/no
     MATCH_DISTANCE  = 0.067     # seconds
+    WEBCAM_DEVICE   = 0         # id of webcam
 
     # CAMERA SETTINGS
     FRAME_WIDTH     = 640       # pixels

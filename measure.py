@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import multiprocessing
+from re import L
 
 import cv2
 import numpy as np
@@ -16,7 +17,7 @@ class ProcessPose(multiprocessing.Process):
     def run(self):
         import mediapipe as mp
 
-        cap = cv2.VideoCapture(0)
+        cap = cv2.VideoCapture(Config.WEBCAM_DEVICE)
         cap.set(cv2.CAP_PROP_FRAME_WIDTH, Config.FRAME_WIDTH)
         cap.set(cv2.CAP_PROP_FRAME_HEIGHT, Config.FRAME_HEIGHT)
 
@@ -43,7 +44,11 @@ class ProcessPose(multiprocessing.Process):
                     else:
                         landmarks.append([0, 0])
 
+                landmarks = [landmarks[0], landmarks[12], landmarks[11], landmarks[14], landmarks[13], landmarks[16], landmarks[15],
+                            landmarks[24], landmarks[23], landmarks[26], landmarks[25], landmarks[28], landmarks[27]]
+
                 landmarks = np.array(landmarks, np.float32)
+
                 np.save(f'./out/pose/{t_taken}.npy', landmarks)
 
                 if Config.DRAW_POSE:

@@ -18,3 +18,25 @@ GUI framework used: [PySimpleGUI](https://github.com/PySimpleGUI/PySimpleGUI)
 4. For data exploration run `app.py`  
 
 <img src="./res/app.png">
+
+## Data Collection
+
+### Hardware used
+
+- Ausdom AF640 (Webcam)
+- Vayyar Walabot Creator (Radar)
+
+### Experiment setup
+
+<center>
+    <img src="./res/setup_1.png" width=40%>
+    <img src="./res/setup_2.png" width=40%>
+</center>
+
+> Use the `measure.py` script to connect to the webcam and the radar and start data collection. 
+
+## Data Processing
+
+<img src="./res/pose.png" width=256px>
+
+Used pose detection method is [Media Pipe Pose](https://google.github.io/mediapipe/solutions/pose.html). Unnecessary keypoints are discarded (33 -> 13).
