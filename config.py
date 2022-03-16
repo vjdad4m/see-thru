@@ -1,3 +1,8 @@
+"""
+config.py
+Used to configure experiment parameters.
+"""
+
 class Config(object):
     # GENERAL SETTINGS
     LOGGING_RATE    = 1         # seconds
@@ -5,9 +10,9 @@ class Config(object):
     DRAW_POSE       = True      # yes/no
     DRAW_RADAR      = True      # yes/no
     MATCH_DISTANCE  = 0.067     # seconds
-    WEBCAM_DEVICE   = 0         # id of webcam
 
     # CAMERA SETTINGS
+    WEBCAM_DEVICE   = 0         # id of webcam
     FRAME_WIDTH     = 640       # pixels
     FRAME_HEIGHT    = 480       # pixels
     SAVE_RAW_IMG    = True      # yes/no

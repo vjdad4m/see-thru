@@ -1,4 +1,11 @@
 #!/usr/bin/env python3
+
+"""
+time_matcher.py
+Match pose data with radar data based on the timestamps.
+Outputs a csv file with corresponding filenames, and relative time distance.
+"""
+
 import os
 from config import Config
 
@@ -14,7 +21,7 @@ f_radar.sort()
 i_pose = 0
 i_radar = 0
 
-with open('test_timestamps.csv', 'w') as f:
+with open('timestamps.csv', 'w') as f:
     f.write('img,pose,radar,distance\n')
     while i_pose < len(f_pose) - 1 and i_radar < len(f_radar) - 1:
         c_pose = float(os.path.splitext(f_pose[i_pose])[0])

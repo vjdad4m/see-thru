@@ -1,4 +1,11 @@
 #!/usr/bin/env python3
+
+"""
+test_data.py
+Generate dummy radar, image and pose data.
+Used to test time_matcher.py
+"""
+
 import random
 import time
 

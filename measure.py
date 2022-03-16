@@ -1,4 +1,11 @@
 #!/usr/bin/env python3
+
+"""
+measure.py
+Record webcam and radar data using corresponding APIs.
+Output gets saved to the corresponding folder in the /out directory.
+"""
+
 import multiprocessing
 from re import L
 

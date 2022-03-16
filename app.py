@@ -1,5 +1,10 @@
 #!/usr/bin/env python3
 
+"""
+app.py
+GUI frontend to view collected data.
+"""
+
 import PySimpleGUI as sg
 import numpy as np
 import cv2
@@ -9,7 +14,7 @@ import io
 
 sg.theme('DarkAmber')
 
-with open('test_timestamps.csv') as f:
+with open('timestamps.csv') as f:
     csv_reader = csv.reader(f, delimiter=',')
     data = list(csv_reader)
     l_data = len(data)
