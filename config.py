@@ -22,11 +22,11 @@ class Config(object):
 
     # RADAR SETTINGS
     MIN_R = 100                 # cm
-    MAX_R = 349                 # cm
+    MAX_R = 250                 # cm
     RES_R = 5                   # cm
-    MIN_T = -44                 # deg
-    MAX_T = 44                  # deg
-    RES_T = 2.8                 # deg
-    MIN_P = -44                 # deg
-    MAX_P = 44                  # deg
-    RES_P = 2.8                 # deg
+    MIN_T = -30                 # deg
+    MAX_T = 30                  # deg
+    RES_T = 1                   # deg
+    MIN_P = -30                 # deg
+    MAX_P = 30                  # deg
+    RES_P = 1                   # deg

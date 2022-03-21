@@ -42,6 +42,7 @@ def get_pose(img, kps):
     return bio.getvalue()
 
 layout= [   [sg.Stretch(), sg.Button('X')],
+            [sg.Text(key='line', text='0', size=(36), justification='center')],
             [sg.ProgressBar(max_value = l_data, orientation = 'h', size=(46, 20), key = 'progress')],
             [sg.HorizontalSeparator()],
             [sg.Text('Image', size=(36), justification='center'), sg.Text('Pose', size=(36), justification='center'), sg.Text('Radar', size=(36), justification='center')],
@@ -78,5 +79,6 @@ while True:
         window['pose'].update(data = get_pose('./out/img/' + data[data_index][0], np.load('./out/pose/' + data[data_index][1])))
         window['radar'].update(data = get_img('./out/radar/' + data[data_index][2]))
         window['progress'].update_bar(data_index)
+        window['line'].update(data_index)
 
 window.close()
