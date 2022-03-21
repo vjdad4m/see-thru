@@ -17,9 +17,17 @@ from PIL import Image
 
 from tqdm import trange
 
+import time
+
+# import wandb
+# wandb.init(project="see-thru-test", entity="vjdad4m")
+
+device = "cuda" if torch.cuda.is_available() else "cpu"
+print(f'[Using {device} device]')
+
 class SeeThruDataset(Dataset):
     def __init__(self):
-        self.data = pd.read_csv('./test_timestamps.csv')
+        self.data = pd.read_csv('./timestamps.csv')
         self.transform = transforms.ToTensor()
 
     def __len__(self):
@@ -31,9 +39,9 @@ class SeeThruDataset(Dataset):
         y_loc = row['pose']
 
         x = Image.open(f'./out/radar/{x_loc}')
-        x = self.transform(x).unsqueeze(0)
+        x = self.transform(x).unsqueeze(0).to(device)
 
-        y = torch.flatten(torch.tensor(np.load(f'./out/pose/{y_loc}')))
+        y = torch.flatten(torch.tensor(np.load(f'./out/pose/{y_loc}'))).to(device)
 
         return x, y
 
@@ -43,8 +51,8 @@ class SeeThruNet(nn.Module):
         self.conv1 = nn.Conv2d(1, 6, 3)
         self.pool = nn.MaxPool2d(2, 2)
         self.conv2 = nn.Conv2d(6, 16, 5)
-        self.fc1 = nn.Linear(800, 120)
-        self.fc2 = nn.Linear(120, 66)
+        self.fc1 = nn.Linear(960, 120)
+        self.fc2 = nn.Linear(120, 26)
     
     def forward(self, x):
         x = self.pool(F.relu(self.conv1(x)))
@@ -56,15 +64,18 @@ class SeeThruNet(nn.Module):
 
 ds = SeeThruDataset()
 
-device = "cuda" if torch.cuda.is_available() else "cpu"
-print(f'[Using {device} device]')
-
 print('[Initializing NN]')
 net = SeeThruNet()
 
+if device == "cuda":
+    net.cuda()
+
 print('[Initializing Criterion and Optimizer]')
-criterion = nn.BCEWithLogitsLoss()
-optimizer = optim.SGD(net.parameters(), lr = 0.001, momentum = 0.9)
+criterion = nn.MSELoss()
+optimizer = optim.Adam(net.parameters(), lr = 0.001)
+
+
+# wandb.config = {"learning_rate": 0.001,"epochs": 100,"batch_size": 1}
 
 for epoch in trange(100):
     for i, data in enumerate(ds):
@@ -81,6 +92,9 @@ for epoch in trange(100):
         loss.backward()
         optimizer.step()
 
-    print(loss)
-
+        # wandb.log({"loss": loss})
+        # wandb.watch(net)
+        
+    torch.save(net.state_dict(), f'./{loss}_{time.time()}.pt')
+               
 print('Finished Training')
