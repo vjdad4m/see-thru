@@ -35,6 +35,10 @@ GUI framework used: [PySimpleGUI](https://github.com/PySimpleGUI/PySimpleGUI)
 
 > Use the `measure.py` script to connect to the webcam and the radar and start data collection. 
 
+### Storage
+
+Dataset size is 138 Mb / 1000 samples. Meaning a dataset consisting of 1 million samples will take 135 GBs of storage space.
+
 ## Data Processing
 
 <img src="./res/pose.png" width=256px>
