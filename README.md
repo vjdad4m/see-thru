@@ -44,3 +44,14 @@ Dataset size is 138 Mb / 1000 samples. Meaning a dataset consisting of 1 million
 <img src="./res/pose.png" width=256px>
 
 Used pose detection method is [Media Pipe Pose](https://google.github.io/mediapipe/solutions/pose.html). Unnecessary keypoints are discarded (33 -> 13).
+
+## Modeling
+
+<img src="./res/training_test.png" width=256px>
+
+Training results after a couple of minutes.
+
+How to improve data set:
+* More samples
+* Filter samples (the image above was trained with faulty data)
+* Generalized (measurements were taken from a single angle)
