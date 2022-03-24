@@ -30,3 +30,6 @@ class Config(object):
     MIN_P = -30                 # deg
     MAX_P = 30                  # deg
     RES_P = 1                   # deg
+
+    # NN SETTINGS
+    MODEL_FN = "752.8922119140625_1648154866.5687418.pt"    # model filename (model should be placed in /model directory)
