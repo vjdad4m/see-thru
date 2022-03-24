@@ -87,9 +87,9 @@ if device == "cuda":
 
 print('[Initializing Criterion and Optimizer]')
 criterion = SeeThruLoss # nn.MSELoss()
-optimizer = optim.Adam(net.parameters(), lr = 0.0001)
+optimizer = optim.Adam(net.parameters(), lr = 0.0002)
 
-# wandb.config = {"learning_rate": 0.001,"epochs": 100,"batch_size": 1}
+# wandb.config = {"learning_rate": 0.0002, "epochs": 100,"batch_size": 1}
 
 l = 0
 

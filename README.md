@@ -51,6 +51,12 @@ Used pose detection method is [Media Pipe Pose](https://google.github.io/mediapi
 
 Training results after a couple of minutes.
 
+Loss function:
+
+<img src="./res/loss_function.svg" width=512px>
+
+Where: N is number of keypoints; Rx,y are real keypoints; Px,y are predicted keypoints. 
+
 How to improve data set:
 * More samples
 * Filter samples (the image above was trained with faulty data)
