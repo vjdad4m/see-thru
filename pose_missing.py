@@ -13,6 +13,7 @@ import numpy as np
 import pandas as pd
 
 import random
+import time
 
 from tqdm import trange
 
@@ -51,13 +52,15 @@ class PoseMissing(nn.Module):
         super(PoseMissing, self).__init__()
         self.fc1 = nn.Linear(26, 104)
         self.relu1 = nn.ReLU()
-        self.fc2 = nn.Linear(104, 208)
+        self.fc2 = nn.Linear(104, 26)
         self.relu2 = nn.ReLU()
-        self.fc3 = nn.Linear(208, 26)
+        self.fc3 = nn.Linear(52, 26)
     
     def forward(self, x):
+        x_orig = x
         x = self.relu1(self.fc1(x))
         x = self.relu2(self.fc2(x))
+        x = torch.cat([x, x_orig], -1)
         return self.fc3(x)
 
 def SeeThruLoss(out, real):
@@ -82,9 +85,10 @@ if device == "cuda":
 
 print('[Initializing Criterion and Optimizer]')
 criterion = SeeThruLoss
-optimizer = optim.Adam(net.parameters(), lr = 0.0002)
+optimizer = optim.Adam(net.parameters(), lr = 0.0004)
 
 for epoch in trange(200):
+    l = 0
     for i, data in enumerate(ds):
         inputs, labels = data
 
@@ -99,9 +103,16 @@ for epoch in trange(200):
 
         loss.backward()
         optimizer.step()
+        l += loss
 
-    print(loss)
+    l /= len(ds)
 
+    print()
+    print(l)
     print(inputs)
     print(outputs)
     print(labels)
+
+    torch.save(net.state_dict(), f'./model/pose_missing/{l}_{time.time()}.pt')
+
+print('Finished Training')

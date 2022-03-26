@@ -130,6 +130,6 @@ for epoch in trange(200):
     img = Image.fromarray(img)
     img.save(f'./model/{loss}.png')
     
-    torch.save(net.state_dict(), f'./model/{loss}_{time.time()}.pt')
+    torch.save(net.state_dict(), f'./model/see_thru/{loss}_{time.time()}.pt')
     
 print('Finished Training')
