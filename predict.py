@@ -3,7 +3,6 @@ predict.py
 Load a trained NN, and run it live on a radar.
 """
 
-from doctest import OutputChecker
 import torch
 import torch.nn as nn
 import torch.nn.functional as F
@@ -42,7 +41,7 @@ print(f'[Using {device} device]')
 print('[Initializing NN]')
 net = SeeThruNet()
 
-MODEL_LOC = f"./model/{Config.MODEL_FN}"
+MODEL_LOC = f"./model/see_thru/{Config.MODEL_FN}"
 net.load_state_dict(torch.load(MODEL_LOC))
 
 if device == "cuda":
