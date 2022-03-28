@@ -72,7 +72,7 @@ if device == "cuda":
 
 print('[Initializing Criterion and Optimizer]')
 criterion = nn.MSELoss()
-optimizer = optim.Adam(net.parameters(), lr = 0.0002)
+optimizer = optim.Adam(net.parameters(), lr = 0.0003)
 
 for epoch in trange(200):
     l = 0

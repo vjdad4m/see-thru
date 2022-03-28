@@ -18,6 +18,13 @@ import WalabotAPI as wlbt
 
 from config import Config
 
+font                   = cv2.FONT_HERSHEY_SIMPLEX
+bottomLeftCornerOfText = (0, 50)
+fontScale              = 2
+fontColor              = (255,255,255)
+thickness              = 1
+lineType               = 2
+
 class HasHuman(nn.Module):
     def __init__(self):
         super(HasHuman, self).__init__()
@@ -36,7 +43,7 @@ class HasHuman(nn.Module):
         x = self.fc2(self.fc1(x))
         x = self.relu(x)
         x = self.fc3(x)
-        return torch.tanh(x)
+        return torch.sigmoid(x)
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
 print(f'[Using {device} device]')
@@ -44,7 +51,7 @@ print(f'[Using {device} device]')
 print('[Initializing NN]')
 net = HasHuman()
 
-MODEL_LOC = f"./model/has_human/25.852584838867188_1648497283.2727995.pt"
+MODEL_LOC = f"./model/has_human/24.0039005279541_1648499698.723307.pt"
 net.load_state_dict(torch.load(MODEL_LOC))
 
 if device == "cuda":
@@ -66,14 +73,21 @@ print(np.array(wlbt.GetRawImageSlice()[0]).shape)
 
 transform = transforms.ToTensor()
 
-display = []
+red = []
+for x in range(255):
+    row = []
+    for y in range(255):
+        row.append(np.array([0, 0, 255], dtype=np.uint8))
+    red.append(row)
+red = np.array(red, dtype=np.uint8)
+
+blue = []
 for x in range(255):
     row = []
     for y in range(255):
         row.append(np.array([255, 0, 0], dtype=np.uint8))
-    display.append(row)
-display = np.array(display, dtype=np.uint8)
-now = False
+    blue.append(row)
+blue = np.array(blue, dtype=np.uint8)
 
 running = True
 while running:
@@ -87,14 +101,23 @@ while running:
 
         outputs = outputs.cpu()
 
-    if outputs > Config.HUMAN_THRESHOLD and not now:
-        now = True
-        display = cv2.cvtColor(display, cv2.COLOR_BGR2RGB)
-    elif outputs < Config.HUMAN_THRESHOLD and now:
-        now = False
-        display = cv2.cvtColor(display, cv2.COLOR_BGR2RGB)
+    if outputs > Config.HUMAN_THRESHOLD:
+        display = blue
+    elif outputs < Config.HUMAN_THRESHOLD:
+        display = red
 
-    cv2.imshow('display', display)
+    display_copy = display.copy()
+    
+    cv2.putText(display_copy,
+    str(round(float(outputs), 4)), 
+    bottomLeftCornerOfText, 
+    font, 
+    fontScale,
+    fontColor,
+    thickness,
+    lineType)
+
+    cv2.imshow('display', display_copy)
     if cv2.waitKey(1) == ord('q'):
         running = False
 
