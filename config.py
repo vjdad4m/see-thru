@@ -10,6 +10,7 @@ class Config(object):
     DRAW_POSE       = True      # yes/no
     DRAW_RADAR      = True      # yes/no
     MATCH_DISTANCE  = 0.067     # seconds
+    HUMAN_THRESHOLD = 0.6       # %
 
     # CAMERA SETTINGS
     WEBCAM_DEVICE   = 0         # id of webcam

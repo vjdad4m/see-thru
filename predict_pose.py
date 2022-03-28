@@ -3,7 +3,6 @@ predict_pose.py
 Calculate missing pose keypoints.
 """
 
-from distutils.config import DEFAULT_PYPIRC
 import torch
 import torch.nn as nn
 

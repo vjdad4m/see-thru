@@ -1,4 +1,5 @@
 __pycache__/
 wandb/
 timestamps.csv
+hashuman.csv
 *.pt
