@@ -87,11 +87,12 @@ if device == "cuda":
 
 print('[Initializing Criterion and Optimizer]')
 criterion = SeeThruLoss # nn.MSELoss()
-optimizer = optim.Adam(net.parameters(), lr = 0.0002)
+optimizer = optim.Adam(net.parameters(), lr = 0.0003) # 3e-4 :)
 
-# wandb.config = {"learning_rate": 0.0002, "epochs": 200,"batch_size": 1}
+# wandb.config = {"learning_rate": 0.0003, "epochs": 200,"batch_size": 1}
 
 for epoch in trange(200):
+    l = 0
     for i, data in enumerate(ds):
         inputs, labels, loc = data
 
@@ -109,8 +110,9 @@ for epoch in trange(200):
             
         # wandb.log({"loss": loss})
         # wandb.watch(net)
+        l += loss
     
-    print(loss)
+    l /= len(ds)
 
     img = np.array(Image.open(f"./out/img/{loc[:-4]}.png"))
     outputs = outputs.cpu()
@@ -128,8 +130,8 @@ for epoch in trange(200):
         img = cv2.line(img, (x1, y1), (x2, y2), (128, 128, 128), 2)
 
     img = Image.fromarray(img)
-    img.save(f'./model/{loss}.png')
+    img.save(f'./model/see_thru/{l}.png')
     
-    torch.save(net.state_dict(), f'./model/see_thru/{loss}_{time.time()}.pt')
+    torch.save(net.state_dict(), f'./model/see_thru/{l}_{time.time()}.pt')
     
 print('Finished Training')

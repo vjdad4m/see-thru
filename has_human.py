@@ -74,7 +74,7 @@ print('[Initializing Criterion and Optimizer]')
 criterion = nn.MSELoss()
 optimizer = optim.Adam(net.parameters(), lr = 0.0003)
 
-for epoch in trange(200):
+for epoch in trange(400):
     l = 0
     for i, data in enumerate(ds):
         inputs, labels = data

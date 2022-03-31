@@ -2,4 +2,5 @@ __pycache__/
 wandb/
 timestamps.csv
 hashuman.csv
+*.avi
 *.pt
