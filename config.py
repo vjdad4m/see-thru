@@ -33,4 +33,4 @@ class Config(object):
     RES_P = 1                   # deg
 
     # NN SETTINGS
-    MODEL_FN = "570.6353759765625_1648740904.7747502.pt"    # model filename (model should be placed in /model/see_thru directory)
+    MODEL_FN = "413.8771057128906_1648900077.268758.pt"    # model filename (model should be placed in /model/see_thru directory)

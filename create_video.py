@@ -89,7 +89,7 @@ def create_frame(l_img, l_pose, l_radar):
     radar = Image.open('./out/radar/' + l_radar)
     img_radar = radar.resize((640, 480))
 
-    pose = np.load('./out/pose/' + l_pose)
+    pose = np.load('./out/pose_complete/' + l_pose)
     img_pose = Image.new("RGB", (640, 480))
     img_pose = draw_keypoints(img_pose, pose)
 

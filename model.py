@@ -42,7 +42,8 @@ class SeeThruDataset(Dataset):
         x = Image.open(f'./out/radar/{x_loc}')
         x = self.transform(x).unsqueeze(0).to(device)
 
-        y = torch.flatten(torch.tensor(np.load(f'./out/pose/{y_loc}'))).to(device)
+        # load completed pose (pose_complete) ! need to run complete_poses.py
+        y = torch.flatten(torch.tensor(np.load(f'./out/pose_complete/{y_loc}'))).to(device)
 
         return x, y, y_loc
 
@@ -60,7 +61,7 @@ class SeeThruNet(nn.Module):
         x = self.pool(F.relu(self.conv2(x)))
         x = torch.flatten(x, 1)
         x = F.relu(self.fc1(x))
-        x = F.relu(self.fc2(x))
+        x = self.fc2(x)
         return x
 
 def SeeThruLoss(out, real):
@@ -87,7 +88,7 @@ if device == "cuda":
 
 print('[Initializing Criterion and Optimizer]')
 criterion = SeeThruLoss # nn.MSELoss()
-optimizer = optim.Adam(net.parameters(), lr = 0.0003) # 3e-4 :)
+optimizer = optim.Adam(net.parameters(), lr = 0.0004)
 
 # wandb.config = {"learning_rate": 0.0003, "epochs": 200,"batch_size": 1}
 
