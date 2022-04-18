@@ -20,6 +20,8 @@ from tqdm import trange
 
 import time
 
+import matplotlib.pyplot as plt
+
 # import wandb
 # wandb.init(project="see-thru-test", entity="vjdad4m")
 
@@ -92,7 +94,13 @@ optimizer = optim.Adam(net.parameters(), lr = 0.0004)
 
 # wandb.config = {"learning_rate": 0.0003, "epochs": 200,"batch_size": 1}
 
-for epoch in trange(200):
+run_start = round(float(time.time()), 2)
+
+losses = []
+
+N_EPOCHS = 200
+
+for epoch in trange(N_EPOCHS):
     l = 0
     for i, data in enumerate(ds):
         inputs, labels, loc = data
@@ -114,6 +122,10 @@ for epoch in trange(200):
         l += loss
     
     l /= len(ds)
+    l = l.detach().cpu().numpy()
+    losses.append(l)
+
+    print(f'\nEpoch [{epoch}/{N_EPOCHS}] | Loss: {l}')
 
     img = np.array(Image.open(f"./out/img/{loc[:-4]}.png"))
     outputs = outputs.cpu()
@@ -125,14 +137,18 @@ for epoch in trange(200):
         x2 = int(x2.item() * 640)
         y1 = int(y1.item() * 480)
         y2 = int(y2.item() * 480)
-        # print(x1, x2, y1, y2)
         img = cv2.circle(img, (x1, y1), 2, (255, 0, 0), 2)
         img = cv2.circle(img, (x2, y2), 2, (0, 255, 0), 2)
         img = cv2.line(img, (x1, y1), (x2, y2), (128, 128, 128), 2)
 
     img = Image.fromarray(img)
-    img.save(f'./model/see_thru/{l}.png')
+    img.save(f'./model/see_thru/{run_start}_{l}.png')
     
-    torch.save(net.state_dict(), f'./model/see_thru/{l}_{time.time()}.pt')
+    torch.save(net.state_dict(), f'./model/see_thru/{run_start}_{l}.pt')
+
+    plt.plot(losses)
+    plt.xlabel('Epoch')
+    plt.ylabel('Loss')
+    plt.savefig(f'./model/plots/{run_start}_epoch_{epoch}.png')
     
 print('Finished Training')
