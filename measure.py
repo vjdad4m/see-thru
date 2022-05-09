@@ -1,159 +1,103 @@
-#!/usr/bin/env python3
-
-"""
-measure.py
-Record webcam and radar data using corresponding APIs.
-Output gets saved to the corresponding folder in the /out directory.
-"""
-
-import multiprocessing
-from re import L
-
 import cv2
-import numpy as np
 import time
-from PIL import Image
+import numpy as np
+from threading import Thread
 
+from sensor import Camera, Radar
 from config import Config
 
-class ProcessPose(multiprocessing.Process):
-    def __init__(self, id):
-        super(ProcessPose, self).__init__()
-        self.id = id
+class Measurement:
+    def __init__(self, m_type, data):
+        self.m_type = m_type
+        self.data = None
+        if data is not None:
+            self.data = np.array(data, np.uint8)
+        self.time = round(float(time.time()), 4)
 
-    def run(self):
-        import mediapipe as mp
+    def __repr__(self):
+        return '%s measurement at %.4f :\n%s' % (self.m_type, self.time, str(self.data))
 
-        cap = cv2.VideoCapture(Config.WEBCAM_DEVICE)
-        cap.set(cv2.CAP_PROP_FRAME_WIDTH, Config.FRAME_WIDTH)
-        cap.set(cv2.CAP_PROP_FRAME_HEIGHT, Config.FRAME_HEIGHT)
+    def save(self, path=None):
+        if self.data is not None:
+            if not path:
+                np.savez(f'data/{self.m_type}/{self.time}.npz', self.data)
+            else:
+                np.savez(path, self.data)
 
-        pose = mp.solutions.pose.Pose(min_detection_confidence = 0.5, min_tracking_confidence = 0.5)
-        
-        fps = lambda t1, t2: 1 / (t2 - t1)
-        measure_previous = time.time()
-        
-        while cap.isOpened():
-            t1 = time.time()
+class Measurer:
+    def __init__(self):
+        self.camera = Camera()
+        self.radar = Radar(Config.radar_config)
+        self.camera_latest = Measurement(None, None)
+        self.radar_latest = Measurement(None, None)
 
-            ret, frame = cap.read()
-            t_taken = time.time()
-
-            img = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-
-            res = pose.process(img)
-
-            if res.pose_landmarks:
-                landmarks = []
-                for lm in res.pose_landmarks.landmark:
-                    if lm.visibility > 0.5:
-                        landmarks.append([lm.x, lm.y])
-                    else:
-                        landmarks.append([0, 0])
-
-                landmarks = [landmarks[0], landmarks[12], landmarks[11], landmarks[14], landmarks[13], landmarks[16], landmarks[15],
-                            landmarks[24], landmarks[23], landmarks[26], landmarks[25], landmarks[28], landmarks[27]]
-
-                landmarks = np.array(landmarks, np.float32)
-
-                np.save(f'./out/pose/{t_taken}.npy', landmarks)
-
-                if Config.DRAW_POSE:
-                    pose_img = frame.copy()
-                    
-                    mp.solutions.drawing_utils.draw_landmarks(
-                        pose_img,
-                        res.pose_landmarks,
-                        mp.solutions.pose.POSE_CONNECTIONS,
-                        landmark_drawing_spec = mp.solutions.drawing_styles.get_default_pose_landmarks_style()
-                    )
-
-                    cv2.imshow('pose', pose_img)
-
-                if Config.SAVE_RAW_IMG:
-                    img = cv2.cvtColor(img, cv2.COLOR_RGB2GRAY)
-                    # np.save(f'./out/img/{t_taken}.npy', img)
-                    img = Image.fromarray(img)
-                    img.save(f'./out/img/{t_taken}.png')
-
-            if Config.DRAW_CAM:
-                cv2.imshow('frame', frame)
-            
-            if cv2.waitKey(1) == ord('q'):
-                break
-            
-            t2 = time.time()
-            
-            if t2 - measure_previous > Config.LOGGING_RATE:
-                measure_previous = t2
-                print(f'[Process Pose] fps: {fps(t1, t2)}')
-  
-        cv2.destroyAllWindows()
-
-
-
-class ProcessRadar(multiprocessing.Process):
-    def __init__(self, id):
-        super(ProcessRadar, self).__init__()
-        self.id = id
-
-    def run(self):
-        import WalabotAPI as wlbt
-        wlbt.Init()
-        wlbt.SetSettingsFolder()
-        wlbt.ConnectAny()
-
-        wlbt.SetProfile(wlbt.PROF_SENSOR)
-        wlbt.SetArenaR(Config.MIN_R,    Config.MAX_R, Config.RES_R)
-        wlbt.SetArenaTheta(Config.MIN_T,Config.MAX_T, Config.RES_T)
-        wlbt.SetArenaPhi(Config.MIN_P,  Config.MAX_P, Config.RES_P)
-
-        wlbt.Start()
-
-        wlbt.Trigger()
-        print(np.array(wlbt.GetRawImageSlice()[0]).shape)
-        
-
-        fps = lambda t1, t2: 1 / (t2 - t1)
-        measure_previous = time.time()
-        
+    def measure_camera(self):
         while True:
-            t1 = time.time()
-            
-            wlbt.Trigger()
-            img = wlbt.GetRawImageSlice()
-            t_taken = time.time()
+            self.camera_latest = Measurement('cam', self.camera.get_frame())
+    
+    def measure_radar(self):
+        while True:
+            self.radar_latest = Measurement('radar', self.radar.get_frame())
 
-            img = np.array(img[0], np.uint8)
+    def run_camera(self):
+        thread_camera = Thread(target=self.measure_camera)
+        thread_camera.daemon = True
+        print('starting camera thread')
+        thread_camera.start()
 
-            image = Image.fromarray(img)
-            image.save(f'./out/radar/{t_taken}.png')
-            
-            if Config.DRAW_RADAR:
-                cv2.imshow('radar', img)
+    def run_radar(self):
+        thread_radar = Thread(target=self.measure_radar)
+        thread_radar.daemon = True
+        print('starting radar thread')
+        thread_radar.start()
 
+    def run(self):
+        self.run_camera()
+        self.run_radar()
+        
+
+def measure():
+    m = Measurer()
+    m.run()
+
+    n_samples = 0
+
+    i = 0
+    t_start = time.time()
+
+    while True:
+        # get latest measurements
+        camera_latest = m.camera_latest
+        radar_latest = m.radar_latest
+
+        if camera_latest.data is not None and radar_latest.data is not None:
+            # save measurements
+            if abs(camera_latest.time - radar_latest.time) < Config.match_distance:
+                camera_latest.save()
+                radar_latest.save()
+                n_samples += 1
+
+            # display sensors
+            if Config.draw_cam:
+                cv2.imshow('camera', camera_latest.data)
+            if Config.draw_radar:
+                cv2.imshow('radar', radar_latest.data)
             if cv2.waitKey(1) == ord('q'):
+                cv2.destroyAllWindows()
                 break
 
-            t2 = time.time()
+        # measure fps
+        if i > 100:
+            t_now = time.time()
+            print(f'running at {1 / (t_now - t_start) * 100} fps, collected {n_samples} samples')
+            t_start = t_now
+            i = 0
+        i += 1
 
-            if t2 - measure_previous > Config.LOGGING_RATE:
-                measure_previous = t2
-                print(f'[Process Radar] fps: {fps(t1, t2)}')
-
-        cv2.destroyAllWindows()
-
-
-
-def main():
-    p_pose = ProcessPose(0)
-    p_radar = ProcessRadar(1)
-
-    print('Starting Pose Process')
-    p_pose.start()
-
-    print('Starting Radar Process')
-    p_radar.start()
-
+        time.sleep(0.05) # sleep 50 ms
+    
+    m.camera.release()
+    m.radar.release()
+    
 if __name__ == '__main__':
-    main()
+    measure()
